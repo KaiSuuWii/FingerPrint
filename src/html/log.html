@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/src/css/bootstrap.css" />
+    <link rel="stylesheet" href="/src/css/custom.css" />
+
+    <title>FingerPrint Login</title>
+  </head>
+
+  <body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/src/js/jquery-3.5.0.min.js"></script>
+    <script src="/src/js/bootstrap.bundle.js"></script>
+    <script src="/src/js/es6-shim.js"></script>
+    <script src="/src/js/websdk.client.bundle.min.js"></script>
+    <script src="/src/js/fingerprint.sdk.min.js"></script>
+    <script src="/src/js/custom.js"></script>
+
+    <div class="container">
+      <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="text-center">Fingerprint Login</h3>
+            </div>
+            <div class="card-body">
+              <form action="#" onsubmit="return false">
+                <div id="verifyIdentityStatusField" class="text-center">
+                  <!--verifyIdentity Status will be displayed Here-->
+                </div>
+                <div class="form-row mt-3">
+                  <div class="col mb-3 mb-md-0 text-center">
+                    <label
+                      for="verifyReaderSelect"
+                      class="my-text7 my-pri-color"
+                      >Choose Fingerprint Reader</label
+                    >
+                    <select
+                      name="readerSelect"
+                      id="verifyReaderSelect"
+                      class="form-control"
+                      onclick="beginIdentification()"
+                    >
+                      <option selected>Select Fingerprint Reader</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row mt-4">
+                  <div class="col mb-md-0 text-center">
+                    <label for="userIDVerify" class="my-text7 my-pri-color m-0"
+                      >Specify UserID</label
+                    >
+                    <input
+                      type="text"
+                      id="userIDVerify"
+                      class="form-control mt-1"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-row mt-3">
+                  <div class="col text-center">
+                    <p class="my-text7 my-pri-color mt-1">
+                      Capture Verification Finger
+                    </p>
+                  </div>
+                </div>
+                <div
+                  id="verificationFingers"
+                  class="form-row justify-content-center"
+                >
+                  <div id="verificationFinger" class="col mb-md-0 text-center">
+                    <span
+                      class="icon icon-indexfinger-not-enrolled"
+                      title="not_enrolled"
+                    ></span>
+                  </div>
+                </div>
+                <div class="form-row mt-3" id="userDetails">
+                  <!--this is where user details will be displayed-->
+                </div>
+                <div class="form-row m-3 mt-md-5 justify-content-center">
+                  <div class="col-4">
+                    <button
+                      class="btn btn-primary btn-block my-sec-bg my-text-button py-1"
+                      type="submit"
+                      onclick="captureForIdentify()"
+                    >
+                      Start Capture
+                    </button>
+                  </div>
+                  <div class="col-4">
+                    <button
+                      class="btn btn-primary btn-block my-sec-bg my-text-button py-1"
+                      type="submit"
+                      onclick="serverIdentify()"
+                    >
+                      Identify
+                    </button>
+                  </div>
+                  <div class="col-4">
+                    <button
+                      class="btn btn-secondary btn-outline-warning btn-block my-text-button py-1 border-0"
+                      type="button"
+                      onclick="clearCapture()"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
