@@ -2,7 +2,7 @@
 /**
  * this file uses the enrollment class to
  * enroll users
- * @authors Dahir Muhammad Dahir (dahirmuhammad3@gmail.com)
+ * @authors Dahir Muhammad Dahir (dahirmuhammad3@gmail.com) (EDITOR: KAIVENI THE GOAT)
  * @date    2020-04-18 14:28:39
  */
 
@@ -21,7 +21,7 @@ if(!empty($_POST["data"])){
 
     $pre_reg_fmd_array = [
         "index_finger" => $index_finger_string_array,
-        "middle_finger" => $middle_finger_string_array
+        "middle_finger" => $middle_finger_string_array //MIDDLE FINGER IS THE FUCKING THUMB CUZ IM TOO LAZY
     ];
 
     // this check for duplicate is not necessary, only required if you want to

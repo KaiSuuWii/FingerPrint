@@ -1,6 +1,6 @@
 <?php
 /*
- * Author: Dahir Muhammad Dahir
+ * Author: Dahir Muhammad Dahir (EDITOR: KAIVENI THE GOAT)
  * Date: 26-April-2020 12:05 AM
  * About: I will tell you later
  */
@@ -15,7 +15,7 @@ date_default_timezone_set("Africa/Lagos");
 class Database {
     private const host = "localhost";
     private const user = "root";
-    private const password = "";
+    private const password = "root";
     private const database = "fingerprint";
     private $connection;
 
@@ -27,10 +27,10 @@ class Database {
         }
     }
 
-    function getUserInfo($username): array {
-        $sql_query = "SELECT * FROM users WHERE username=?";
+    function getUserInfo($employee_id): array {
+        $sql_query = "SELECT * FROM users WHERE employee_id=?";
         $param_type = "s";
-        $param_array = [$username];
+        $param_array = [$employee_id];
         $result = $this->select($sql_query, $param_type, $param_array);
         return $result;
     }
