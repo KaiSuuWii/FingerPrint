@@ -1,19 +1,21 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/src/css/bootstrap.css">
-    <link rel="stylesheet" href="/src/css/custom.css">
-
+    <link rel="stylesheet" href="/src/css/bootstrap.css" />
+    <link rel="stylesheet" href="/src/css/custom.css" />
+    <link rel="stylesheet" href="/src/css/output.css" />
     <title>FingerPrint Web App</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="/src/js/jquery-3.5.0.min.js"></script>
@@ -23,177 +25,402 @@
     <script src="/src/js/fingerprint.sdk.min.js"></script>
     <script src="/src/js/custom.js"></script>
 
-    <div class="container">
-        <div id="controls" class="row justify-content-center mx-5 mx-sm-0 mx-lg-5">
-            <div class="col-sm mb-2 ml-sm-5">
-                <button id="createEnrollmentButton" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#createEnrollment" onclick="beginEnrollment()">Create Enrollment</button>
-            </div>
-            <div class="col-sm mb-2 mr-sm-5">
-                <button id="verifyIdentityButton" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#verifyIdentity" onclick="beginIdentification()">Verify Identity</button>
-            </div>
+    <div class="container mt-5">
+      <h1 class="text-center font-weight-bold mb-5" style="font-size: 2.5rem">
+        Biometric Attendance Kiosk
+      </h1>
+      <div class="row justify-content-center">
+        <div class="col-md-5 d-flex flex-column align-items-center">
+          <button
+            id="enrollBtn"
+            type="button"
+            class="btn text-white btn-block mb-3 d-flex align-items-center justify-content-center gap-2 border-0"
+            onclick="window.location.href='register'"
+            style="background-color: #10b981"
+          >
+            <img
+              src="/res/svg/fingerprint.svg"
+              alt="Register"
+              style="
+                height: 1.3em;
+                margin-right: 0.5em;
+                filter: brightness(0) invert(1);
+              "
+            />
+            Register Fingerprint
+          </button>
+          <button
+            id="importCsvBtn"
+            type="button"
+            class="btn text-white btn-block d-flex align-items-center justify-content-center gap-2 border-0"
+            style="background-color: #10b981"
+          >
+            <img
+              src="/res/svg/file-down.svg"
+              alt="Import"
+              style="
+                height: 1.3em;
+                margin-right: 0.5em;
+                filter: brightness(0) invert(1);
+              "
+            />
+            Import Users
+          </button>
+          <input
+            type="file"
+            id="csvFileInput"
+            accept=".csv"
+            style="display: none"
+          />
         </div>
-    </div>
-</body>
-
-<section>
-    <!--Create Enrolment Section-->
-    <div class="modal fade" id="createEnrollment" data-backdrop="static" tabindex="-1" aria-labelledby="createEnrollmentTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title my-text my-pri-color" id="createEnrollmentTitle">Create Enrollment</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearCapture()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="#" onsubmit="return false">
-                        <div id="enrollmentStatusField" class="text-center">
-                            <!--Enrollment Status will be displayed Here-->
-                        </div>
-                        <div class="form-row mt-3">
-                            <div class="col mb-3 mb-md-0 text-center">
-                                <label for="enrollReaderSelect" class="my-text7 my-pri-color">Choose Fingerprint Reader</label>
-                                <select name="readerSelect" id="enrollReaderSelect" class="form-control" onclick="beginEnrollment()">
-                                    <option selected>Select Fingerprint Reader</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row mt-2">
-                            <div class="col mb-3 mb-md-0 text-center">
-                                <label for="userID" class="my-text7 my-pri-color">Specify UserID</label>
-                                <input id="userID" type="text" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="form-row mt-1">
-                            <div class="col text-center">
-                                <p class="my-text7 my-pri-color mt-3">Capture Index Finger</p>
-                            </div>
-                        </div>
-                        <div id="indexFingers" class="form-row justify-content-center">
-                            <div id="indexfinger1" class="col mb-3 mb-md-0 text-center">
-                                <span class="icon icon-indexfinger-not-enrolled" title="not_enrolled"></span>
-                            </div>
-                            <div id="indexfinger2" class="col mb-3 mb-md-0 text-center">
-                                <span class="icon icon-indexfinger-not-enrolled" title="not_enrolled"></span>
-                            </div>
-                            <div id="indexfinger3" class="col mb-3 mb-md-0 text-center">
-                                <span class="icon icon-indexfinger-not-enrolled" title="not_enrolled"></span>
-                            </div>
-                            <div id="indexfinger4" class="col mb-3 mb-md-0 text-center">
-                                <span class="icon icon-indexfinger-not-enrolled" title="not_enrolled"></span>
-                            </div>
-                        </div>
-                        <div class="form-row mt-1">
-                            <div class="col text-center">
-                                <p class="my-text7 my-pri-color mt-5">Capture Middle Finger</p>
-                            </div>
-                        </div>
-                        <div id="middleFingers" class="form-row justify-content-center">
-                            <div id="middleFinger1" class="col mb-3 mb-md-0 text-center">
-                                <span class="icon icon-middlefinger-not-enrolled" title="not_enrolled"></span>
-                            </div>
-                            <div id="middleFinger2" class="col mb-3 mb-md-0 text-center">
-                                <span class="icon icon-middlefinger-not-enrolled" title="not_enrolled"></span>
-                            </div>
-                            <div id="middleFinger3" class="col mb-3 mb-md-0 text-center">
-                                <span class="icon icon-middlefinger-not-enrolled" title="not_enrolled"></span>
-                            </div>
-                            <div id="middleFinger4" class="col mb-3 mb-md-0 text-center" value="true">
-                                <span class="icon icon-middlefinger-not-enrolled" title="not_enrolled"></span>
-                            </div>
-                        </div>
-                        <div class="form-row m-3 mt-md-5 justify-content-center">
-                            <div class="col-4">
-                                <button class="btn btn-primary btn-block my-sec-bg my-text-button py-1" type="submit" onclick="beginCapture()">Start Capture</button>
-                            </div>
-                            <div class="col-4">
-                                <button class="btn btn-primary btn-block my-sec-bg my-text-button py-1" type="submit" onclick="serverEnroll()">Enroll</button>
-                            </div>
-                            <div class="col-4">
-                                <button class="btn btn-secondary btn-outline-warning btn-block my-text-button py-1 border-0" type="button" onclick="clearCapture()">Clear</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <div class="form-row">
-                        <div class="col">
-                            <button class="btn btn-secondary my-text8 btn-outline-danger border-0" type="button" data-dismiss="modal" onclick="clearCapture()">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-5 d-flex flex-column align-items-center">
+          <button
+            id="verifyBtn"
+            type="button"
+            class="btn text-white btn-block mb-3 d-flex align-items-center justify-content-center gap-2 border-0"
+            onclick="window.location.href='log'"
+            style="background-color: #10b981"
+          >
+            <img
+              src="/res/svg/log-in.svg"
+              alt="Log"
+              style="
+                height: 1.3em;
+                margin-right: 0.5em;
+                filter: brightness(0) invert(1);
+              "
+            />
+            Attendance Log
+          </button>
+          <button
+            id="exportLogsBtn"
+            type="button"
+            class="btn text-white btn-block d-flex align-items-center justify-content-center gap-2 border-0"
+            style="background-color: #10b981"
+            data-toggle="modal"
+            data-target="#exportLogsModal"
+          >
+            <img
+              src="/res/svg/file-up.svg"
+              alt="Export"
+              style="
+                height: 1.3em;
+                margin-right: 0.5em;
+                filter: brightness(0) invert(1);
+              "
+            />
+            Export Logs
+          </button>
         </div>
+      </div>
     </div>
-</section>
-
-<section>
-    <!--Verify Identity Section-->
-    <div id="verifyIdentity" class="modal fade" data-backdrop="static" tabindex="-1" aria-labelledby="verifyIdentityTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title my-text my-pri-color" id="verifyIdentityTitle">Identity Verification</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="clearCapture()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <!-- Export Logs Modal -->
+    <div
+      class="modal fade"
+      id="exportLogsModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exportLogsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl" role="document" style="max-width: 90%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exportLogsModalLabel">
+              Attendance Logs
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div
+              class="d-flex justify-content-between align-items-center mb-2 flex-wrap"
+            >
+              <div>
+                <label for="logDateFilter" class="mr-2 font-weight-bold"
+                  >Filter by Date:</label
+                >
+                <select
+                  id="logDateFilter"
+                  class="form-control d-inline-block w-auto"
+                ></select>
+              </div>
+              <div
+                class="row no-gutters align-items-center mt-2"
+                style="min-width: 180px"
+              >
+                <div class="col-auto pr-2">
+                  <button
+                    id="exportAllLogsBtn"
+                    class="btn btn-sm px-3 text-white border-0"
+                    style="
+                      background-color: #10b981;
+                      font-size: 0.95rem;
+                      white-space: nowrap;
+                    "
+                  >
+                    Export All
+                  </button>
                 </div>
-                <div class="modal-body">
-                    <form action="#" onsubmit="return false">
-                        <div id="verifyIdentityStatusField" class="text-center">
-                            <!--verifyIdentity Status will be displayed Here-->
-                        </div>
-                        <div class="form-row mt-3">
-                            <div class="col mb-3 mb-md-0 text-center">
-                                <label for="verifyReaderSelect" class="my-text7 my-pri-color">Choose Fingerprint Reader</label>
-                                <select name="readerSelect" id="verifyReaderSelect" class="form-control" onclick="beginIdentification()">
-                                    <option selected>Select Fingerprint Reader</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row mt-4">
-                            <div class="col mb-md-0 text-center">
-                                <label for="userIDVerify" class="my-text7 my-pri-color m-0">Specify UserID</label>
-                                <input type="text" id="userIDVerify" class="form-control mt-1" required>
-                            </div>
-                        </div>
-                        <div class="form-row mt-3">
-                            <div class="col text-center">
-                                <p class="my-text7 my-pri-color mt-1">Capture Verification Finger</p>
-                            </div>
-                        </div>
-                        <div id="verificationFingers" class="form-row justify-content-center">
-                            <div id="verificationFinger" class="col mb-md-0 text-center">
-                                <span class="icon icon-indexfinger-not-enrolled" title="not_enrolled"></span>
-                            </div>
-                        </div>
-                        <div class="form-row mt-3" id="userDetails">
-                            <!--this is where user details will be displayed-->
-                        </div>
-                        <div class="form-row m-3 mt-md-5 justify-content-center">
-                            <div class="col-4">
-                                <button class="btn btn-primary btn-block my-sec-bg my-text-button py-1" type="submit" onclick="captureForIdentify()">Start Capture</button>
-                            </div>
-                            <div class="col-4">
-                                <button class="btn btn-primary btn-block my-sec-bg my-text-button py-1" type="submit" onclick="serverIdentify()">Identify</button>
-                            </div>
-                            <div class="col-4">
-                                <button class="btn btn-secondary btn-outline-warning btn-block my-text-button py-1 border-0" type="button" onclick="clearCapture()">Clear</button>
-                            </div>
-                        </div>
-                    </form>
+                <div
+                  class="col-auto d-flex align-items-center"
+                  id="exportRangeControls"
+                >
+                  <button
+                    id="exportRangeLogsBtn"
+                    class="btn btn-sm px-3 text-white border-0"
+                    style="
+                      background-color: #10b981;
+                      font-size: 0.95rem;
+                      white-space: nowrap;
+                    "
+                  >
+                    Export by Date Range
+                  </button>
                 </div>
-                <div class="modal-footer">
-                    <div class="form-row">
-                        <div class="col">
-                            <button class="btn btn-secondary my-text8 btn-outline-danger border-0" type="button" data-dismiss="modal" onclick="clearCapture()">Close</button>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
+            <div
+              id="calendarInputs"
+              class="d-none justify-content-center align-items-center mt-3 w-100"
+            >
+              <div
+                class="d-flex flex-column flex-md-row justify-content-center align-items-center"
+              >
+                <input
+                  type="date"
+                  id="exportStartDate"
+                  class="form-control form-control-sm mr-md-1 mb-2 mb-md-0"
+                  style="min-width: 120px; font-size: 0.95rem"
+                />
+                <span class="mx-1 mb-2 mb-md-0">to</span>
+                <input
+                  type="date"
+                  id="exportEndDate"
+                  class="form-control form-control-sm ml-md-1 mb-2 mb-md-0"
+                  style="min-width: 120px; font-size: 0.95rem"
+                />
+                <button
+                  id="confirmExportRangeBtn"
+                  class="btn btn-sm px-3 text-white border-0 ml-md-2 mb-2 mb-md-0"
+                  style="
+                    background-color: #10b981;
+                    font-size: 0.95rem;
+                    white-space: nowrap;
+                  "
+                >
+                  Export
+                </button>
+                <button
+                  id="cancelExportRangeBtn"
+                  class="btn btn-sm px-3 ml-md-2 mb-2 mb-md-0"
+                  style="
+                    background-color: #e5e7eb;
+                    color: #374151;
+                    font-size: 0.95rem;
+                    white-space: nowrap;
+                  "
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <div style="max-height: 400px; overflow-y: auto">
+              <table
+                class="table table-bordered table-striped mb-0"
+                id="logsTable"
+                style="font-size: 0.97rem"
+              >
+                <thead class="thead-light">
+                  <tr>
+                    <th>Employee Number</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Logs will be loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</section>
+    <script>
+      document
+        .getElementById("importCsvBtn")
+        .addEventListener("click", function () {
+          document.getElementById("csvFileInput").click();
+        });
+      document
+        .getElementById("csvFileInput")
+        .addEventListener("change", function (e) {
+          var file = e.target.files[0];
+          if (!file) return;
+          var formData = new FormData();
+          formData.append("csv", file);
+          fetch("/src/core/import_users.php", {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              alert(data.message || "Import complete!");
+            })
+            .catch(() => alert("Import failed."));
+        });
+      // Fetch and display users
+      function loadUsers() {
+        fetch("/src/core/get_users.php")
+          .then((res) => res.json())
+          .then((users) => {
+            const tbody = document.querySelector("#usersTable tbody");
+            tbody.innerHTML = "";
+            if (Array.isArray(users) && users.length > 0) {
+              users.forEach((user) => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${user.employee_id}</td><td>${user.fullname}</td>`;
+                tbody.appendChild(tr);
+              });
+            } else {
+              tbody.innerHTML =
+                '<tr><td colspan="2" class="text-center">No users found.</td></tr>';
+            }
+          })
+          .catch(() => {
+            const tbody = document.querySelector("#usersTable tbody");
+            tbody.innerHTML =
+              '<tr><td colspan="2" class="text-center text-danger">Failed to load users.</td></tr>';
+          });
+      }
+      loadUsers();
+      // Export Logs Modal Functionality
+      let allLogs = [];
+      function fetchLogsAndDates() {
+        fetch("/src/core/get_attendance_logs.php")
+          .then((res) => res.json())
+          .then((logs) => {
+            allLogs = logs;
+            // Populate date dropdown
+            const dateSet = new Set(logs.map((log) => log.time.split(" ")[0]));
+            const dateFilter = document.getElementById("logDateFilter");
+            dateFilter.innerHTML = '<option value="all">All Dates</option>';
+            Array.from(dateSet)
+              .sort((a, b) => b.localeCompare(a))
+              .forEach((date) => {
+                dateFilter.innerHTML += `<option value="${date}">${date}</option>`;
+              });
+            renderLogsTable("all");
+          });
+      }
+      function renderLogsTable(date) {
+        const tbody = document.querySelector("#logsTable tbody");
+        tbody.innerHTML = "";
+        let filtered =
+          date === "all"
+            ? allLogs
+            : allLogs.filter((log) => log.time.startsWith(date));
+        if (filtered.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="4" class="text-center">No logs found.</td></tr>';
+        } else {
+          filtered.forEach((log) => {
+            const [logDate, logTime] = log.time.split(" ");
+            const status = log.log_in == 1 ? "LOGGED IN" : "LOGGED OUT";
+            const statusClass =
+              log.log_in == 1 ? "text-success" : "text-danger";
+            tbody.innerHTML += `<tr><td>${log.employee_id}</td><td>${logDate}</td><td>${logTime}</td><td class="${statusClass}">${status}</td></tr>`;
+          });
+        }
+      }
+      $("#exportLogsModal").on("show.bs.modal", function () {
+        fetchLogsAndDates();
+      });
+      document
+        .getElementById("logDateFilter")
+        .addEventListener("change", function () {
+          renderLogsTable(this.value);
+        });
+      document
+        .getElementById("exportAllLogsBtn")
+        .addEventListener("click", function () {
+          window.location = "/src/core/export_logs.php";
+        });
+      const exportRangeBtn = document.getElementById("exportRangeLogsBtn");
+      const calendarInputs = document.getElementById("calendarInputs");
+      const confirmExportBtn = document.getElementById("confirmExportRangeBtn");
+      const cancelExportBtn = document.getElementById("cancelExportRangeBtn");
+      const exportAllBtn = document.getElementById("exportAllLogsBtn");
 
+      exportRangeBtn.addEventListener("click", function () {
+        exportRangeBtn.classList.add("d-none");
+        calendarInputs.classList.remove("d-none");
+        exportAllBtn.disabled = true;
+        exportAllBtn.classList.add("disabled");
+      });
+
+      cancelExportBtn.addEventListener("click", function () {
+        calendarInputs.classList.add("d-none");
+        exportRangeBtn.classList.remove("d-none");
+        document.getElementById("exportStartDate").value = "";
+        document.getElementById("exportEndDate").value = "";
+        exportAllBtn.disabled = false;
+        exportAllBtn.classList.remove("disabled");
+      });
+
+      confirmExportBtn.addEventListener("click", function () {
+        const start = document.getElementById("exportStartDate").value;
+        const end = document.getElementById("exportEndDate").value;
+        if (!start && !end) {
+          alert("Please select at least one date.");
+          return;
+        }
+        let url = "/src/core/export_logs.php";
+        if (start && end) {
+          url += `?start=${encodeURIComponent(start)}&end=${encodeURIComponent(
+            end
+          )}`;
+        } else if (start) {
+          url += `?date=${encodeURIComponent(start)}`;
+        } else {
+          url += `?date=${encodeURIComponent(end)}`;
+        }
+        window.location = url;
+        calendarInputs.classList.add("d-none");
+        exportRangeBtn.classList.remove("d-none");
+        document.getElementById("exportStartDate").value = "";
+        document.getElementById("exportEndDate").value = "";
+        exportAllBtn.disabled = false;
+        exportAllBtn.classList.remove("disabled");
+      });
+      window.addEventListener("DOMContentLoaded", function () {
+        var userIdInput = document.getElementById("userID");
+        if (userIdInput && typeof showUserInfo === "function") {
+          userIdInput.value = "";
+          showUserInfo();
+        }
+      });
+      // Set max date for calendar inputs to today
+      function setMaxDateForCalendars() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        const dd = String(today.getDate()).padStart(2, "0");
+        const maxDate = `${yyyy}-${mm}-${dd}`;
+        document.getElementById("exportStartDate").setAttribute("max", maxDate);
+        document.getElementById("exportEndDate").setAttribute("max", maxDate);
+      }
+      setMaxDateForCalendars();
+      // Also reset max date on modal open in case of navigation
+      $("#exportLogsModal").on("show.bs.modal", setMaxDateForCalendars);
+    </script>
+  </body>
 </html>

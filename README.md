@@ -110,7 +110,7 @@ CREATE DATABASE fingerprint;
 username, fullname columns and also nullable index and middle finger columns*/
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
+  `employee_id` varchar(255) NOT NULL UNIQUE,
   `fullname` varchar(255) NOT NULL,
   `indexfinger` varchar(4000) NULL,
   `middlefinger` varchar(4000) NULL,
@@ -119,3 +119,33 @@ CREATE TABLE `users` (
 ```
 
 Add some data and leave the index finger and middle finger columns empty. Now you should be able to enroll and verify fingerprints.
+
+### STYLING ENGINE
+
+### Tailwind CSS Setup & Build
+
+To use and build Tailwind CSS styles, you need Node.js (v14 or higher recommended) and npm installed on your system.
+
+#### 1. Install Node.js
+
+Download and install Node.js from [nodejs.org](https://nodejs.org/).
+
+#### 2. Install Tailwind and dependencies
+
+Navigate to your project directory and run:
+
+```bash
+npm install tailwindcss @tailwindcss/cli
+```
+
+#### 3. Build Tailwind CSS
+
+To generate your CSS file (e.g., `output.css`), run:
+
+```bash
+npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
+```
+
+This will watch for changes in your Tailwind input file and output the compiled CSS. Adjust the input/output paths as needed for your project structure.
+
+You can stop the watcher with `Ctrl+C` when done.

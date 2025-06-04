@@ -51,3 +51,19 @@ function getAllFmds(){
     $allFmds = $myDatabase->select($sql_query);
     return json_encode($allFmds);
 }
+
+function getAllUsers(){
+    $myDatabase = new Database();
+    $sql_query = "select employee_id, fullname, indexfinger, middlefinger from users where indexfinger != '' OR middlefinger != ''";
+    $users = $myDatabase->select($sql_query);
+    return json_encode($users);
+}
+
+function getAttendanceLogs($employee_id){
+    $myDatabase = new Database();
+    $sql_query = "SELECT id, employee_id, time, log_in FROM attendance_logs WHERE employee_id=? ORDER BY id DESC";
+    $param_type = "s";
+    $param_array = [$employee_id];
+    $logs = $myDatabase->select($sql_query, $param_type, $param_array);
+    return json_encode($logs);
+}

@@ -10,7 +10,7 @@ namespace fingerprint;
 
 use mysqli;
 
-date_default_timezone_set("Africa/Lagos");
+date_default_timezone_set("Asia/Manila");
 
 class Database {
     private const host = "localhost";

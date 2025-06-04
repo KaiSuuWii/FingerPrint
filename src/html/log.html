@@ -7,121 +7,276 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="/src/css/bootstrap.css" />
-    <link rel="stylesheet" href="/src/css/custom.css" />
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="/src/css/output.css" />
 
     <title>FingerPrint Login</title>
   </head>
 
-  <body>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <body
+    class="bg-gray-100 min-h-screen flex flex-col items-center justify-center"
+  >
+    <!-- wtf is this shit-->
+    <div class="w-full max-w-3xl mx-auto mt-8">
+      <h1 class="text-3xl text-center mb-4 font-bold">
+        Biometric Attendance Kiosk
+      </h1>
+      <div
+        class="bg-white rounded-xl shadow p-6 flex flex-col items-center mb-6"
+      >
+        <div
+          class="text-5xl font-bold tracking-widest text-center"
+          id="realtimeClock"
+        >
+          <!-- Time will go here -->
+        </div>
+        <div
+          class="text-center text-lg text-gray-500 mt-1 mb-2"
+          id="realtimeDate"
+        >
+          <!-- Date will go here -->
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-1 flex-1 flex flex-row gap-4 w-full">
+          <!-- Left: User Info -->
+          <div class="flex-1 flex flex-col items-center gap-y-3">
+            <div
+              class="flex-1 bg-white rounded-sm p-6 flex flex-col items-center justify-center w-full shadow-sm"
+            >
+              <img
+                src="/res/icons/placeholder.jpg"
+                alt="User"
+                class="w-40 h-40 object-cover border-1 border-gray-200 mb-6"
+              />
+              <div
+                class="text-3xl font-bold text-gray-800"
+                id="displayFullname"
+              >
+                John Doe
+              </div>
+              <div
+                class="text-lg font-semibold text-gray-500 mb-4"
+                id="displayEmployeeId"
+              >
+                202101012
+              </div>
+            </div>
+
+            <div class="flex bg-white rounded-sm w-full gap-4 p-6 shadow-sm">
+              <button
+                id="logInBtn"
+                class="flex-1 py-2 rounded font-bold text-white bg-green-500 hover:bg-green-600 transition"
+              >
+                LOG IN
+              </button>
+              <button
+                id="logOutBtn"
+                class="flex-1 py-2 rounded font-bold text-white bg-red-500 hover:bg-red-600 transition"
+              >
+                LOG OUT
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Right: Recent Records -->
+        <div class="col-span-1 flex-1 bg-white rounded-sm shadow-sm p-6">
+          <div class="font-semibold text-gray-700 mb-4">Recent Records</div>
+          <div
+            id="recentRecordsContainer"
+            class="flex flex-col gap-2 overflow-y-auto max-h-80"
+            style="scrollbar-width: none; -ms-overflow-style: none"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      id="fingerModal"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden"
+    >
+      <div
+        class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center relative min-w-[320px] rounded-sm"
+      >
+        <button
+          id="closeModalBtn"
+          class="absolute top-3 right-3 w-6 h-6 flex items-center justify-center"
+          type="button"
+        >
+          <svg
+            class="w-6 h-6 text-[#757575]"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <div
+          class="bg-[#10B981] flex flex-row justify-between items-center p-4 rounded-md"
+        >
+          <svg
+            class="w-16 h-20 mb-4 text-white"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M15 6v6h4l-7 7-7-7h4V6h6z" />
+          </svg>
+
+          <div class="text-xl font-semibold text-white text-left">
+            Place Finger<br />on the Scanner
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden fields for JS compatibility -->
+    <input type="hidden" id="userID" value="" />
+    <input type="hidden" id="userIDVerify" value="" />
+    <select id="verifyReaderSelect" class="hidden"></select>
+    <div id="verificationFingers" class="hidden">
+      <div id="verificationFinger"></div>
+    </div>
+    <div id="userDetails" class="hidden"></div>
+    <div id="verifyIdentityStatusField" class="hidden"></div>
+
     <script src="/src/js/jquery-3.5.0.min.js"></script>
     <script src="/src/js/bootstrap.bundle.js"></script>
     <script src="/src/js/es6-shim.js"></script>
     <script src="/src/js/websdk.client.bundle.min.js"></script>
     <script src="/src/js/fingerprint.sdk.min.js"></script>
     <script src="/src/js/custom.js"></script>
+    <script>
+      // Modal logic
+      const fingerModal = document.getElementById("fingerModal");
+      const closeModalBtn = document.getElementById("closeModalBtn");
+      const logInBtn = document.getElementById("logInBtn");
+      const logOutBtn = document.getElementById("logOutBtn");
+      let modalActive = false;
+      let pendingAttendanceAction = null; // "login" or "logout"
 
-    <div class="container">
-      <div class="row justify-content-center mt-5">
-        <div class="col-md-8">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="text-center">Fingerprint Login</h3>
-            </div>
-            <div class="card-body">
-              <form action="#" onsubmit="return false">
-                <div id="verifyIdentityStatusField" class="text-center">
-                  <!--verifyIdentity Status will be displayed Here-->
-                </div>
-                <div class="form-row mt-3">
-                  <div class="col mb-3 mb-md-0 text-center">
-                    <label
-                      for="verifyReaderSelect"
-                      class="my-text7 my-pri-color"
-                      >Choose Fingerprint Reader</label
-                    >
-                    <select
-                      name="readerSelect"
-                      id="verifyReaderSelect"
-                      class="form-control"
-                      onclick="beginIdentification()"
-                    >
-                      <option selected>Select Fingerprint Reader</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-row mt-4">
-                  <div class="col mb-md-0 text-center">
-                    <label for="userIDVerify" class="my-text7 my-pri-color m-0"
-                      >Specify UserID</label
-                    >
-                    <input
-                      type="text"
-                      id="userIDVerify"
-                      class="form-control mt-1"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="form-row mt-3">
-                  <div class="col text-center">
-                    <p class="my-text7 my-pri-color mt-1">
-                      Capture Verification Finger
-                    </p>
-                  </div>
-                </div>
-                <div
-                  id="verificationFingers"
-                  class="form-row justify-content-center"
-                >
-                  <div id="verificationFinger" class="col mb-md-0 text-center">
-                    <span
-                      class="icon icon-indexfinger-not-enrolled"
-                      title="not_enrolled"
-                    ></span>
-                  </div>
-                </div>
-                <div class="form-row mt-3" id="userDetails">
-                  <!--this is where user details will be displayed-->
-                </div>
-                <div class="form-row m-3 mt-md-5 justify-content-center">
-                  <div class="col-4">
-                    <button
-                      class="btn btn-primary btn-block my-sec-bg my-text-button py-1"
-                      type="submit"
-                      onclick="captureForIdentify()"
-                    >
-                      Start Capture
-                    </button>
-                  </div>
-                  <div class="col-4">
-                    <button
-                      class="btn btn-primary btn-block my-sec-bg my-text-button py-1"
-                      type="submit"
-                      onclick="serverIdentify()"
-                    >
-                      Identify
-                    </button>
-                  </div>
-                  <div class="col-4">
-                    <button
-                      class="btn btn-secondary btn-outline-warning btn-block my-text-button py-1 border-0"
-                      type="button"
-                      onclick="clearCapture()"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      function showModal() {
+        fingerModal.classList.remove("hidden");
+        modalActive = true;
+      }
+      function hideModal() {
+        fingerModal.classList.add("hidden");
+        modalActive = false;
+      }
+      closeModalBtn.addEventListener("click", hideModal);
+
+      // Show modal on log in/out
+      logInBtn.addEventListener("click", function () {
+        pendingAttendanceAction = "login";
+        showModal();
+        captureForIdentify();
+      });
+      logOutBtn.addEventListener("click", function () {
+        pendingAttendanceAction = "logout";
+        showModal();
+        captureForIdentify();
+      });
+
+      // Automatically initialize fingerprint reader on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        // Ensure the verification finger has the icon span
+        var verificationFinger = document.getElementById("verificationFinger");
+        if (verificationFinger && !verificationFinger.firstElementChild) {
+          verificationFinger.innerHTML =
+            '<span class="icon icon-indexfinger-not-enrolled" title="not_enrolled"></span>';
+        }
+        beginIdentification();
+
+        fetchLatestAttendanceLog(function (latestLog) {
+          if (latestLog && latestLog.employee_id) {
+            // Fetch user info
+            fetchUserInfo(latestLog.employee_id, function (user) {
+              console.log("Fetched user info:", user);
+              if (user && user[0]) {
+                document.getElementById("displayFullname").textContent =
+                  user[0].fullname;
+                document.getElementById("displayEmployeeId").textContent =
+                  user[0].employee_id;
+              }
+            });
+            // Fetch and render logs
+            fetchAttendanceLogs(latestLog.employee_id, function (res) {
+              if (res.status === "success") {
+                renderAttendanceLogs(res.logs);
+              }
+            });
+          }
+        });
+      });
+
+      // Optionally, you can hook into the fingerprint identification finish event in custom.js to call hideModal()
+      // For now, you can call hideModal() manually after identification is done.
+    </script>
+    <div
+      id="toastContainer"
+      class="fixed top-6 left-6 z-50 flex flex-col gap-2"
+    ></div>
+    <script>
+      function updateDateTime() {
+        const clock = document.getElementById("realtimeClock");
+        const date = document.getElementById("realtimeDate");
+        if (!clock || !date) return;
+
+        const now = new Date();
+
+        // Format time as HH : MM : SS AM/PM
+        let hours = now.getHours();
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12; // 0 should be 12
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+        clock.textContent = `${hours} : ${minutes} : ${seconds} ${ampm}`;
+
+        // Format date as "Thursday, May 30"
+        const options = {
+          weekday: "long",
+          year: undefined,
+          month: "long",
+          day: "numeric",
+        };
+        date.textContent = now.toLocaleDateString(undefined, options);
+      }
+
+      setInterval(updateDateTime, 1000);
+      updateDateTime();
+    </script>
+    <script>
+      function fetchUserInfo(employee_id, callback) {
+        const xhttp = new XMLHttpRequest();
+        xhttp.open(
+          "GET",
+          "/src/core/userinfo.php?employee_id=" +
+            encodeURIComponent(employee_id),
+          true
+        );
+        xhttp.onreadystatechange = function () {
+          if (this.readyState === 4) {
+            let response;
+            try {
+              response = JSON.parse(this.responseText);
+            } catch (e) {
+              if (callback) callback(null);
+              return;
+            }
+            if (callback) callback(response);
+          }
+        };
+        xhttp.send();
+      }
+    </script>
   </body>
 </html>

@@ -25,26 +25,42 @@ if(!empty($_POST["data"])) {
             throw new Exception("Invalid JSON data received");
         }
 
-        $user_id = $user_data->employee_id;
-        //this is not necessarily index_finger it could be
-        //any finger we wish to identify
+        // Get the fingerprint data from the request
         $pre_reg_fmd_string = $user_data->index_finger[0];
 
-        $hand_data = json_decode(getUserFmds($user_id));
-        if ($hand_data === null) {
-            throw new Exception("Error retrieving user fingerprint data");
+        // Get all enrolled users' fingerprints
+        $all_users_json = getAllUsers();
+        if ($all_users_json === null) {
+            throw new Exception("Error retrieving user data");
         }
-        
-        $enrolled_fingers = [
-            "index_finger" => $hand_data[0]->indexfinger,
-            "middle_finger" => $hand_data[0]->middlefinger //MIDDLE FINGER IS THE FUCKING THUMB CUZ IM TOO LAZY
-        ];
 
-        $json_response = verify_fingerprint($pre_reg_fmd_string, $enrolled_fingers);
-        $response = json_decode($json_response);
+        $all_users = json_decode($all_users_json);
+        if ($all_users === null) {
+            throw new Exception("Error decoding user data");
+        }
 
-        if($response === "match"){
-            $user_details = getUserDetails($user_id);
+        $match_found = false;
+        $matched_user = null;
+
+        // Iterate through all users to find a match
+        foreach ($all_users as $user) {
+            $enrolled_fingers = [
+                "index_finger" => $user->indexfinger,
+                "middle_finger" => $user->middlefinger
+            ];
+
+            $json_response = verify_fingerprint($pre_reg_fmd_string, $enrolled_fingers);
+            $response = json_decode($json_response);
+
+            if($response === "match") {
+                $match_found = true;
+                $matched_user = $user;
+                break;
+            }
+        }
+
+        if($match_found) {
+            $user_details = getUserDetails($matched_user->employee_id);
             if ($user_details === null) {
                 throw new Exception("Error retrieving user details");
             }
@@ -52,7 +68,7 @@ if(!empty($_POST["data"])) {
             error_log("User details: " . $user_details);
             echo $user_details;
         }
-        else{
+        else {
             echo json_encode(["status" => "failed", "message" => "No match found"]);
         }
     } catch (Exception $e) {

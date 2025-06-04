@@ -15,7 +15,7 @@ require_once("../core/helpers/helpers.php");
 
 if(!empty($_POST["data"])){
     $user_data = json_decode($_POST["data"]);
-    $user_id = $user_data->id;
+    $user_id = $user_data->employee_id;
     $index_finger_string_array = $user_data->index_finger;
     $middle_finger_string_array = $user_data->middle_finger;
 
